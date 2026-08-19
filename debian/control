@@ -1,0 +1,14 @@
+Source: cygnet-provider
+Section: libs
+Priority: optional
+Maintainer: Sanctum SecOps LLC <support@sanctumsecops.com>
+Build-Depends: debhelper-compat (= 13), cmake, libssl-dev
+Standards-Version: 4.6.0
+Homepage: https://github.com/sanctumsecopsmssp/cygnet-provider
+
+Package: cygnet-provider
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, openssl (>= 3.0)
+Description: OpenSSL 3 provider scaffold for Sanctum SecOps PKI
+ A provider dispatch structure, capability discovery, and algorithm
+ registration points for use with Sanctum SecOps / Cygnus PKI infrastructure.

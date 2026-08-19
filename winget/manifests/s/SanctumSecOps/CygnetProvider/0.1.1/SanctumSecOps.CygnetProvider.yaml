@@ -1,0 +1,26 @@
+PackageIdentifier: SanctumSecOps.CygnetProvider
+PackageVersion: 0.1.1
+PackageName: Cygnet Provider
+Publisher: Sanctum SecOps LLC
+PublisherUrl: https://sanctumsecops.com
+PublisherSupportUrl: https://sanctumsecops.com/support
+PackageUrl: https://github.com/sanctumsecopsmssp/cygnet-provider
+License: Proprietary
+ShortDescription: OpenSSL 3 provider scaffold for Sanctum SecOps PKI stack
+Description: |-
+  Cygnet is an OpenSSL 3 provider scaffold maintained by Sanctum SecOps LLC.
+  It provides provider dispatch structure, capability discovery, and algorithm
+  registration points for use with Cygnus and Sanctum PKI infrastructure.
+Moniker: cygnet-provider
+Tags:
+  - pki
+  - openssl
+  - cryptography
+  - security
+ManifestType: singleton
+ManifestVersion: 1.4.0
+Installers:
+  - Architecture: x64
+    InstallerType: zip
+    InstallerUrl: https://github.com/sanctumsecopsmssp/cygnet-provider/releases/download/v0.1.1/cygnet-provider-v0.1.1.tar.gz
+    InstallerSha256: PLACEHOLDER_UPDATE_WITH_ACTUAL_SHA256
