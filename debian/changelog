@@ -1,3 +1,15 @@
+cygnet-provider (0.1.2-1) unstable; urgency=high
+
+  * Wire the four CYGNET MAC algorithms into the provider build and dispatch.
+    In 0.1.1 cygnetprov_mac.c was absent from the CMake source list, the
+    cygnet_mac_algorithms symbol had no extern declaration, and
+    query_operation had no OSSL_OP_MAC case, so CYGNET-HMAC, CYGNET-CMAC,
+    CYGNET-KMAC-128, and CYGNET-KMAC-256 were unreachable at runtime.
+  * Correct the provider-reported version string, which read 0.1.0 in the
+    0.1.1 release.
+
+ -- Sanctum SecOps LLC <support@sanctumsecops.com>  Wed, 19 Aug 2026 19:41:00 +0000
+
 cygnet-provider (0.1.1-1) unstable; urgency=medium
 
   * Initial release.
