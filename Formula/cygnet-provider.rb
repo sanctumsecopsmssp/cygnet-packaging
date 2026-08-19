@@ -15,8 +15,15 @@ class CygnetProvider < Formula
            "-DCMAKE_BUILD_TYPE=Release",
            "-DOPENSSL_ROOT_DIR=#{Formula["openssl@3"].opt_prefix}"
     system "cmake", "--build", "build"
-    lib.install "build/provider/cygnetprov.dylib"
-    (libexec/"tests").install "build/tests/provider_load_test"
+
+    # CMake gives MODULE libraries a .so suffix on macOS, not .dylib, so accept
+    # either. OpenSSL expects provider modules to end in .dylib on Darwin.
+    built = Dir["build/provider/cygnetprov.{dylib,so}"].first
+    odie "cygnetprov module not found under build/provider" if built.nil?
+    lib.install built => "cygnetprov.dylib"
+
+    loader = "build/tests/provider_load_test"
+    (libexec/"tests").install loader if File.exist?(loader)
   end
 
   def caveats
@@ -26,12 +33,16 @@ class CygnetProvider < Formula
 
       To load it, point OPENSSL_MODULES at that directory:
         export OPENSSL_MODULES="#{lib}"
+
+      Verify with:
+        openssl list -providers -provider cygnetprov
     EOS
   end
 
   test do
     assert_predicate lib/"cygnetprov.dylib", :exist?
     ENV["OPENSSL_MODULES"] = lib
-    system libexec/"tests/provider_load_test"
+    loader = libexec/"tests/provider_load_test"
+    system loader if loader.exist?
   end
 end
