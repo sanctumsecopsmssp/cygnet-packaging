@@ -1,0 +1,107 @@
+name: Publish packages
+
+# Publishes the npm, NuGet, and RubyGems packages for a cygnet-provider release
+# to GitHub Packages. All three authenticate with GITHUB_TOKEN rather than a
+# classic PAT.
+#
+# The NuGet package embeds the release binaries, so this workflow fails if the
+# expected artifacts are missing from the release rather than shipping an empty
+# package.
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Release version to publish, without the leading v
+        required: true
+        default: 0.1.5
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  npm:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://npm.pkg.github.com
+          scope: '@sanctumsecopsmssp'
+      - name: Check version matches the input
+        working-directory: npm
+        run: |
+          pkg=$(node -p "require('./package.json').version")
+          if [ "$pkg" != "${{ inputs.version }}" ]; then
+            echo "npm/package.json is $pkg but input is ${{ inputs.version }}" >&2
+            exit 1
+          fi
+      - name: Publish
+        working-directory: npm
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  nuget:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Download release artifacts and verify them
+        working-directory: nuget
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          V: ${{ inputs.version }}
+        run: |
+          set -euo pipefail
+          mkdir -p stage runtimes/linux-x64/native runtimes/osx-arm64/native
+          gh release download "v${V}" --repo sanctumsecopsmssp/cygnet-provider --dir stage \
+            --pattern "cygnetprov-*" --pattern "SHA256SUMS-*"
+          cd stage
+          sha256sum -c "SHA256SUMS-linux-x86_64-v${V}"
+          sha256sum -c "SHA256SUMS-macos-arm64-v${V}"
+          cd ..
+          cp "stage/cygnetprov-linux-x86_64-v${V}.so" runtimes/linux-x64/native/cygnetprov.so
+          cp "stage/cygnetprov-macos-arm64-v${V}.dylib" runtimes/osx-arm64/native/cygnetprov.dylib
+          file runtimes/linux-x64/native/cygnetprov.so runtimes/osx-arm64/native/cygnetprov.dylib
+      - name: Pack
+        working-directory: nuget
+        run: dotnet pack --configuration Release -p:Version=${{ inputs.version }} --output out
+      - name: Publish
+        working-directory: nuget
+        run: |
+          dotnet nuget add source \
+            --username ${{ github.actor }} \
+            --password ${{ secrets.GITHUB_TOKEN }} \
+            --store-password-in-clear-text \
+            --name github \
+            "https://nuget.pkg.github.com/sanctumsecopsmssp/index.json"
+          dotnet nuget push "out/SanctumSecOps.CygnetProvider.${{ inputs.version }}.nupkg" --source github
+
+  rubygems:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+      - name: Build gem
+        working-directory: rubygems
+        run: gem build cygnet_provider.gemspec
+      - name: Publish
+        working-directory: rubygems
+        env:
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          V: ${{ inputs.version }}
+        run: |
+          set -euo pipefail
+          mkdir -p ~/.gem
+          printf -- '---\n:github: Bearer %s\n' "$TOKEN" > ~/.gem/credentials
+          chmod 0600 ~/.gem/credentials
+          gem push --key github \
+            --host https://rubygems.pkg.github.com/sanctumsecopsmssp \
+            "cygnet_provider-${V}.gem"

@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Native-only package: no managed code ships in it. The publish workflow
+    downloads the release artifacts into runtimes/<rid>/native before packing,
+    so a nupkg can only contain bytes that appear in a signed SHA256SUMS
+    manifest.
+
+    win-x64 is deliberately absent until cygnetprov.dll is actually built.
+  -->
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <NoWarn>NU5128</NoWarn>
+
+    <PackageId>SanctumSecOps.CygnetProvider</PackageId>
+    <Version>0.1.5</Version>
+    <Authors>Sanctum SecOps LLC</Authors>
+    <Company>Sanctum SecOps LLC</Company>
+    <Description>OpenSSL 3 provider module supplying the CYGNET-HMAC, CYGNET-CMAC, CYGNET-KMAC-128, and CYGNET-KMAC-256 MAC algorithms, which delegate to the FIPS provider where one is available.</Description>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/sanctumsecopsmssp/cygnet-provider</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/sanctumsecopsmssp/cygnet-provider</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>openssl;provider;mac;fips;pki</PackageTags>
+    <Copyright>Copyright (c) Sanctum SecOps LLC</Copyright>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="runtimes/**/native/*" Pack="true" PackagePath="runtimes" />
+    <None Include="build/SanctumSecOps.CygnetProvider.props" Pack="true" PackagePath="build/SanctumSecOps.CygnetProvider.props" />
+    <None Include="README.md" Pack="true" PackagePath="" Condition="Exists('README.md')" />
+  </ItemGroup>
+
+</Project>

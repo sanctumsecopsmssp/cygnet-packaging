@@ -1,0 +1,42 @@
+{
+  "name": "@sanctumsecopsmssp/cygnet-provider",
+  "version": "0.1.5",
+  "description": "OpenSSL 3 provider module supplying the CYGNET MAC algorithms for the Sanctum SecOps / Cygnus PKI stack",
+  "license": "Apache-2.0",
+  "author": "Sanctum SecOps LLC",
+  "main": "index.js",
+  "os": [
+    "darwin",
+    "linux"
+  ],
+  "cpu": [
+    "arm64",
+    "x64"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "install": "node install.js",
+    "test": "node -e \"console.log(require('./index.js').modulePath())\""
+  },
+  "files": [
+    "index.js",
+    "install.js",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sanctumsecopsmssp/cygnet-packaging.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "keywords": [
+    "openssl",
+    "provider",
+    "mac",
+    "fips",
+    "pki"
+  ]
+}

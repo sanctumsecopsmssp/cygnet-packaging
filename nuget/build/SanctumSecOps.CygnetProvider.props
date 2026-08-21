@@ -1,0 +1,28 @@
+<Project>
+
+  <!--
+    Exposes the packaged provider module to the consuming project and copies the
+    RID-specific module into an ossl-modules directory beside the output, so
+    OPENSSL_MODULES can point at a directory holding only provider modules.
+  -->
+
+  <PropertyGroup>
+    <CygnetProviderRuntimesDir>$(MSBuildThisFileDirectory)../runtimes/</CygnetProviderRuntimesDir>
+    <CygnetProviderName>cygnetprov</CygnetProviderName>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(RuntimeIdentifier)' != '' AND Exists('$(CygnetProviderRuntimesDir)$(RuntimeIdentifier)/native')">
+    <None Include="$(CygnetProviderRuntimesDir)$(RuntimeIdentifier)/native/*">
+      <Link>ossl-modules/%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+  </ItemGroup>
+
+  <Target Name="CygnetProviderWarnMissingRid"
+          BeforeTargets="Build"
+          Condition="'$(RuntimeIdentifier)' != '' AND !Exists('$(CygnetProviderRuntimesDir)$(RuntimeIdentifier)/native')">
+    <Warning Text="SanctumSecOps.CygnetProvider ships no module for RuntimeIdentifier '$(RuntimeIdentifier)'. Published RIDs: linux-x64, osx-arm64." />
+  </Target>
+
+</Project>
