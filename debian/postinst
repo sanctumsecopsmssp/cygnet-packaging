@@ -1,0 +1,30 @@
+#!/bin/sh
+set -e
+
+MULTIARCH=$(dpkg-architecture -qDEB_HOST_MULTIARCH 2>/dev/null || echo x86_64-linux-gnu)
+MODDIR="/usr/lib/${MULTIARCH}/ossl-modules"
+
+case "$1" in
+  configure)
+    if [ ! -f "${MODDIR}/cygnetprov.so" ]; then
+      echo "cygnet-provider: module missing from ${MODDIR}" >&2
+      exit 1
+    fi
+
+    if command -v openssl >/dev/null 2>&1; then
+      if OPENSSL_MODULES="${MODDIR}" openssl list -providers -provider cygnetprov >/dev/null 2>&1; then
+        echo "cygnet-provider: module loads from ${MODDIR}"
+      else
+        echo "cygnet-provider: WARNING module installed but failed to load." >&2
+        echo "cygnet-provider: check that ${MODDIR} is not on a noexec mount and" >&2
+        echo "cygnet-provider: that openssl is version 3.0 or later." >&2
+      fi
+    fi
+
+    echo "cygnet-provider: load with export OPENSSL_MODULES=${MODDIR}"
+    ;;
+esac
+
+#DEBHELPER#
+
+exit 0

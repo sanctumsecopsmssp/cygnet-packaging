@@ -1,4 +1,8 @@
 #!/usr/bin/make -f
+
+DEB_HOST_MULTIARCH ?= $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
+OSSL_MODULES_DIR = /usr/lib/$(DEB_HOST_MULTIARCH)/ossl-modules
+
 %:
 	dh $@
 
@@ -10,9 +14,12 @@ override_dh_auto_configure:
 override_dh_auto_build:
 	cmake --build build
 
+# mac_forward_test returns 77 (SKIP_RETURN_CODE) where no FIPS provider is
+# present, so this passes on non-FIPS builders and still fails on a real
+# MAC forwarding mismatch.
 override_dh_auto_test:
 	ctest --test-dir build --output-on-failure
 
 override_dh_auto_install:
 	install -Dm755 build/provider/cygnetprov.so \
-		debian/cygnet-provider/usr/lib/cygnetprov.so
+		debian/cygnet-provider$(OSSL_MODULES_DIR)/cygnetprov.so

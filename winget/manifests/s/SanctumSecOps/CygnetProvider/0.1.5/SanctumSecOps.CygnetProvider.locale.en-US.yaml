@@ -1,0 +1,20 @@
+PackageIdentifier: SanctumSecOps.CygnetProvider
+PackageVersion: 0.1.5
+PackageLocale: en-US
+Publisher: Sanctum SecOps LLC
+PackageName: Cygnet Provider
+License: Apache-2.0
+ShortDescription: OpenSSL 3 provider for the Sanctum SecOps / Cygnus PKI stack
+Description: |-
+  Cygnet is an OpenSSL 3 provider maintained by Sanctum SecOps LLC. Supplies
+  FIPS-delegating MAC operations and provider dispatch, capability discovery,
+  and algorithm registration for use with Cygnus and Sanctum PKI infrastructure.
+  The provider module is installed as cygnetprov.dll; point OPENSSL_MODULES at
+  its directory to load it.
+Tags:
+- pki
+- cryptography
+- security
+- fips
+ManifestType: locale
+ManifestVersion: 1.4.0

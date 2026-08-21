@@ -2,13 +2,20 @@ Source: cygnet-provider
 Section: libs
 Priority: optional
 Maintainer: Sanctum SecOps LLC <support@sanctumsecops.com>
-Build-Depends: debhelper-compat (= 13), cmake, libssl-dev
+Build-Depends: debhelper-compat (= 13), cmake, ninja-build, libssl-dev
 Standards-Version: 4.6.0
+Rules-Requires-Root: no
 Homepage: https://github.com/sanctumsecopsmssp/cygnet-provider
 
 Package: cygnet-provider
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, openssl (>= 3.0)
-Description: OpenSSL 3 provider scaffold for Sanctum SecOps PKI
- A provider dispatch structure, capability discovery, and algorithm
- registration points for use with Sanctum SecOps / Cygnus PKI infrastructure.
+Description: OpenSSL 3 provider for Sanctum SecOps PKI
+ Supplies the CYGNET-HMAC, CYGNET-CMAC, CYGNET-KMAC-128, and CYGNET-KMAC-256
+ MAC algorithms, which delegate to the FIPS provider where one is available,
+ plus provider dispatch, capability discovery, and algorithm registration
+ points for use with Sanctum SecOps / Cygnus PKI infrastructure.
+ .
+ The module is installed to /usr/lib/<triplet>/ossl-modules/cygnetprov.so.
+ Point OPENSSL_MODULES at that directory, or reference it from openssl.cnf,
+ to load the provider.

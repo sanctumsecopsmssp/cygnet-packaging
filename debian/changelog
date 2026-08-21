@@ -1,3 +1,27 @@
+cygnet-provider (0.1.5-1) unstable; urgency=high
+
+  * Build the provider module with a platform-correct suffix. CMake gives
+    MODULE libraries a .so suffix everywhere, but OpenSSL dlopens provider
+    modules as .dylib on Darwin and .dll on Windows, so the macOS build could
+    not be loaded without a manual symlink. A single CYGNET_MODULE_SUFFIX
+    variable now drives both the built filename and the generated test
+    configuration.
+  * Skip tests/mac_forward_test (SKIP_RETURN_CODE 77) where no FIPS provider
+    is present, instead of failing, so source builds succeed on hosts that
+    ship no FIPS module.
+  * Replace the hardcoded Ubuntu FIPS module path in the generated test
+    configuration with the CYGNET_FIPS_MODULE cache variable.
+  * Remove the unreferenced duplicate tests/openssl-cygnet-test.cnf.in.
+  * Install the module to /usr/lib/<triplet>/ossl-modules/cygnetprov.so
+    rather than /usr/lib. Provider modules must live on a filesystem mounted
+    without noexec; dlopen otherwise fails with "failed to map segment from
+    shared object", which names neither the module nor the mount.
+  * Declare ninja-build in Build-Depends. debian/rules has always configured
+    with -G Ninja, so the package could not build in a clean chroot.
+  * No Debian package was released for 0.1.3 or 0.1.4.
+
+ -- Sanctum SecOps LLC <support@sanctumsecops.com>  Fri, 21 Aug 2026 00:30:00 +0000
+
 cygnet-provider (0.1.2-1) unstable; urgency=high
 
   * Wire the four CYGNET MAC algorithms into the provider build and dispatch.

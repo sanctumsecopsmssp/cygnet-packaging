@@ -1,0 +1,46 @@
+# NOT READY TO SUBMIT.
+#
+# No Windows build of cygnetprov.dll exists yet. CYGNET_MODULE_SUFFIX gained a
+# .dll branch in 0.1.5 and provider/cygnetprov.def is present, but neither has
+# ever been compiled or tested. InstallerUrl and InstallerSha256 below are
+# placeholders: build cygnetprov.dll on windows-latest, publish
+# cygnetprov-windows-x64-v0.1.5.zip to the v0.1.5 release, then fill in the
+# real SHA256 of that zip.
+#
+# The 0.1.2 manifest pointed InstallerType: zip at the source .tar.gz with the
+# tarball's own hash, so it could not have installed anything.
+PackageIdentifier: SanctumSecOps.CygnetProvider
+PackageVersion: 0.1.5
+PackageName: Cygnet Provider
+Publisher: Sanctum SecOps LLC
+PublisherUrl: https://sanctumsecops.com
+PublisherSupportUrl: https://sanctumsecops.com/support
+PackageUrl: https://github.com/sanctumsecopsmssp/cygnet-provider
+License: Apache-2.0
+LicenseUrl: https://github.com/sanctumsecopsmssp/cygnet-provider/blob/main/LICENSE
+Copyright: Copyright (c) Sanctum SecOps LLC
+ShortDescription: OpenSSL 3 provider for the Sanctum SecOps / Cygnus PKI stack
+Description: |-
+  Cygnet is an OpenSSL 3 provider maintained by Sanctum SecOps LLC. It supplies
+  FIPS-delegating MAC operations (CYGNET-HMAC, CYGNET-CMAC, CYGNET-KMAC-128,
+  CYGNET-KMAC-256) plus provider dispatch, capability discovery, and algorithm
+  registration points for post-quantum KEM, signature, and key-management
+  integrations used with Cygnus and Sanctum PKI infrastructure.
+Moniker: cygnet-provider
+Tags:
+- pki
+- openssl
+- cryptography
+- security
+- fips
+ReleaseNotesUrl: https://github.com/sanctumsecopsmssp/cygnet-provider/releases/tag/v0.1.5
+Installers:
+- Architecture: x64
+  InstallerType: zip
+  NestedInstallerType: portable
+  NestedInstallerFiles:
+  - RelativeFilePath: cygnetprov.dll
+  InstallerUrl: https://github.com/sanctumsecopsmssp/cygnet-provider/releases/download/v0.1.5/cygnetprov-windows-x64-v0.1.5.zip
+  InstallerSha256: REPLACE_WITH_SHA256_OF_WINDOWS_ZIP
+ManifestType: singleton
+ManifestVersion: 1.4.0
